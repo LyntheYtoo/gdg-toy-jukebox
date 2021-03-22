@@ -89,9 +89,10 @@ init 중 firestore rules, indexes 파일의 이름을 물어보는데 엔터를 
 
 그리고 엔터 누르고 마친다
 
-
+![](./fb-cli-init3.png)
 호스팅할 폴더를 선택해야한다 기본값은 public으로 되어있지만 spa웹앱을 만들것이기 때문에 build 폴더로 지정한다
 
+![](./fb-cli-init5.png)
 그 다음 에뮬레이터 설정에서 Database 제외하고 전부 선택하고 전부 기본포트로 설정한다
 
 이제 firebase와 프로젝트가 연동되었다
