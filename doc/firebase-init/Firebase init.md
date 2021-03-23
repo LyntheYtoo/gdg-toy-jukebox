@@ -248,6 +248,9 @@ if (window.location.hostname === 'localhost') {
 `npm start` 실행 시
 ![](./emul2.png)
 
+`http://localhost:4000` 접속 시  
+![](./emul3.png)
+
 이렇게 완료가 되면 hot reloading 기능을 사용하면서  
 로컬에서 안전하게 개발할 수 있다
 
