@@ -2,7 +2,7 @@
 
 # 파이어베이스 초기화 및 웹앱 호스팅
 
-## Create React App으로 프로젝트 초기화
+## Create React App으로 프로젝트 생성
 
 `create-react-app 앱이름`
 
@@ -39,6 +39,8 @@
 ```
 
 > typescript 템플릿으로 생성한 프로젝트 구조
+
+## 파이어베이스 설치
 
 이제 프로젝트를 구성했으니 파이어베이스 프로젝트로 전환해야한다
 
@@ -81,7 +83,7 @@ Use an Existing Project 선택 후 현 firebase 프로젝트 이름 선택 후 �
 > ![](./fb-fs-create.png)  
 > 현 화면에서 테스트 모드 클릭 후 다음으로 넘어가고 그 뒤 리전을 설정하고 마무리 한다
 
-![](./fb-cli-init2.png)
+![](./fb-cli-init2.png)  
 init 중 firestore rules, indexes 파일의 이름을 물어보는데 엔터를 입력해서 넘어가자 (기본값)
 
 또한 Functions의 기본 언어를 묻는데 js, ts중 고른다
@@ -89,13 +91,14 @@ init 중 firestore rules, indexes 파일의 이름을 물어보는데 엔터를 
 
 그리고 엔터 누르고 마친다
 
-![](./fb-cli-init3.png)
+![](./fb-cli-init3.png)  
 호스팅할 폴더를 선택해야한다 기본값은 public으로 되어있지만 spa웹앱을 만들것이기 때문에 build 폴더로 지정한다
 
-![](./fb-cli-init5.png)
+![](./fb-cli-init5.png)  
 그 다음 에뮬레이터 설정에서 Database 제외하고 전부 선택하고 전부 기본포트로 설정한다
 
 이제 firebase와 프로젝트가 연동되었다
+
 ```
 ├── README.md
 ├── build
@@ -133,3 +136,9 @@ init 중 firestore rules, indexes 파일의 이름을 물어보는데 엔터를 
 ```
 
 현 프로젝트를 github repo에 커밋한다
+
+---
+
+## 빌드 및 배포
+
+CRA로 프로젝트가 구성이 되어있다면 `npm run build` 로 빌드한다
