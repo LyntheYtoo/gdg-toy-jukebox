@@ -251,6 +251,8 @@ if (window.location.hostname === 'localhost') {
 `http://localhost:4000` 접속 시  
 ![](./emul3.png)
 
+여기에서는 실제 콘솔처럼 에뮬레이터에서 데이터탐색이나 조작이 가능하다
+
 이렇게 완료가 되면 hot reloading 기능을 사용하면서  
 로컬에서 안전하게 개발할 수 있다
 
