@@ -97,7 +97,7 @@ init 중 firestore rules, indexes 파일의 이름을 물어보는데 엔터를 
 
 ### Functions 설정
 
-> 무료요금제는 사용할 수 없기 때문에 넘어간다
+> 무료요금제일시 사용할 수 없기 때문에 넘어간다
 
 또한 Functions의 기본 언어를 묻는데 js, ts중 고른다
 그 다음은 eslint 사용 여부에 따라 고른다
