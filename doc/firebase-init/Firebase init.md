@@ -248,6 +248,9 @@ if (window.location.hostname === 'localhost') {
 `npm start` 실행 시
 ![](./emul2.png)
 
+> 밑의 `Running in emulator mode...`은 신경쓰지 않아도 된다  
+> 에뮬레이터 모드에 진입했는지 알려주는 인디케이터다
+
 `http://localhost:4000` 접속 시  
 ![](./emul3.png)
 
@@ -258,5 +261,4 @@ if (window.location.hostname === 'localhost') {
 
 이제 파이어베이스를 이용하여 백엔드 없이 웹앱 코딩을 시작해보자
 
-> 밑의 `Running in emulator mode...`은 신경쓰지 않아도 된다  
-> 에뮬레이터 모드에 진입했는지 알려주는 인디케이터다
+
