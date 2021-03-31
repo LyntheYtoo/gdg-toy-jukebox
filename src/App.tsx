@@ -5,8 +5,17 @@ import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
+    <div
+      className="App"
+      css={{
+        display: 'flex',
+        // flexDirection: 'column',
+        // alignItems: 'flex-end',
+        // justifyContent: 'stretch',
+        minHeight: '100vh',
+        backgroundColor: 'lightcyan',
+      }}>
+      {/* <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
@@ -18,7 +27,16 @@ function App() {
           rel="noopener noreferrer">
           Learn React
         </a>
-      </header>
+      </header> */}
+
+      <ul css={{
+        backgroundColor: 'lightpink'
+      }}>
+        <li>aaaa</li>
+        <li>bbbb</li>
+        <li>cccc</li>
+        <li>dddd</li>
+      </ul>
     </div>
   );
 }
