@@ -9,9 +9,8 @@ function App() {
       className="App"
       css={{
         display: 'flex',
-        // flexDirection: 'column',
-        // alignItems: 'flex-end',
-        // justifyContent: 'stretch',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
         minHeight: '100vh',
         backgroundColor: 'lightcyan',
       }}>
@@ -28,10 +27,25 @@ function App() {
           Learn React
         </a>
       </header> */}
+      <div css={{backgroundColor: 'lightsalmon', alignSelf: 'stretch'}}>
+        아 제발
+        <div css={{alignSelf: 'center'}}>wwmlsafas</div>
+      </div>
+      <div>wwmlsafas</div>
 
-      <ul css={{
-        backgroundColor: 'lightpink'
-      }}>
+      <ul
+        css={{
+          backgroundColor: 'lightpink',
+        }}>
+        <li>aaaa</li>
+        <li>bbbb</li>
+        <li>cccc</li>
+        <li>dddd</li>
+      </ul>
+      <ul
+        css={{
+          backgroundColor: 'lightpink',
+        }}>
         <li>aaaa</li>
         <li>bbbb</li>
         <li>cccc</li>
