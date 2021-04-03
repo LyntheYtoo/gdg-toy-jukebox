@@ -9,15 +9,9 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 
-const firebaseConfig = {
-  apiKey: 'AIzaSyAbLRcnIBkSFu91sj8RHplTto9udMA9tKs',
-  authDomain: 'gdg-toy-jukebox.firebaseapp.com',
-  projectId: 'gdg-toy-jukebox',
-  storageBucket: 'gdg-toy-jukebox.appspot.com',
-  messagingSenderId: '677057320010',
-  appId: '1:677057320010:web:a2072e9778b4d3b2c402b3',
-};
-firebase.initializeApp(firebaseConfig);
+import config from './secret_key.json'
+
+firebase.initializeApp(config);
 
 // 주소가 localhost 일 때 firestore 테스트모드
 if (window.location.hostname === 'localhost') {

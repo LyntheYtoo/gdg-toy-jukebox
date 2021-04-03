@@ -133,3 +133,4 @@ sketch
 build
 .firebase
 
+src/secret_key.json
