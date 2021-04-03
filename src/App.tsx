@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState } from 'react';
 import './App.css';
+import {key} from './google_apikey.json'
 
 const QUERY_URL =
-  'https://www.googleapis.com/youtube/v3/search?key=AIzaSyAbLRcnIBkSFu91sj8RHplTto9udMA9tKs&part=snippet&type=video&q=';
+  `https://www.googleapis.com/youtube/v3/search?key=${key}&part=snippet&type=video&q=`;
 
 function App() {
   const [resultItems, setResultItems] = useState<YoutubeItem[]>();

@@ -133,4 +133,5 @@ sketch
 build
 .firebase
 
-src/secret_key.json
+src/firebase_config.json
+src/google_apikey.json
