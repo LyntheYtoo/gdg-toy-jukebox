@@ -103,7 +103,7 @@ css in js를 통한 스타일링을 위하여 `emotion.js`를 설치 한다
 
 ```js
 const QUERY_URL =
-  'https://www.googleapis.com/youtube/v3/search?key=AIzaSyAbLRcnIBkSFu91sj8RHplTto9udMA9tKs&part=snippet&type=video&q=';
+  'https://www.googleapis.com/youtube/v3/search?key=(API key)&part=snippet&type=video&q=';
 
 function App() {
   const [resultItems, setResultItems] = useState<YoutubeItem[]>();
