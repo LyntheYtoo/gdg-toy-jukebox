@@ -5,11 +5,14 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import 'antd/dist/antd.css';
+
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 
-import config from './secret_key.json'
+import config from './firebase_config.json'
+import GlobalStyles from 'GlobalStyles';
 
 firebase.initializeApp(config);
 
@@ -22,6 +25,7 @@ if (window.location.hostname === 'localhost') {
 
 ReactDOM.render(
   <React.StrictMode>
+    <GlobalStyles />
     <App />
   </React.StrictMode>,
   document.getElementById('root'),
