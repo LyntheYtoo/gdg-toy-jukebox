@@ -2,6 +2,7 @@
 import Layout, { Content, Footer, Header } from 'antd/lib/layout/layout';
 import {
   CaretRightOutlined,
+  CloseOutlined,
   FastBackwardOutlined,
   FastForwardOutlined,
   GlobalOutlined,
@@ -10,12 +11,14 @@ import React, { useState } from 'react';
 import './App.css';
 import { key } from './google_apikey.json';
 import { Divider } from 'antd';
+import { flexCol, flexRow, inFlexCol, inFlexRow } from 'globalStyles';
 
 const QUERY_URL = `https://www.googleapis.com/youtube/v3/search?key=${key}&part=snippet&type=video&q=`;
 
 function App() {
   const [resultItems, setResultItems] = useState<YoutubeItem[]>();
   const [searchWord, setSearchWord] = useState('');
+  const [playQueue, setPlayQueue] = useState<YoutubeItem[]>([]);
 
   async function reqGetSearchResult() {
     if (searchWord === '') return;
@@ -29,36 +32,67 @@ function App() {
     resultItems &&
     resultItems.map((item) => {
       return (
-        <p
-          className="flex-col"
+        <div
           css={{
+            ...flexRow,
             alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          key={item.id.videoId}>
-          <img
-            src={item.snippet.thumbnails.medium.url}
-            alt="썸네일"
-          />
-          {item.snippet.title}
-        </p>
+          }}>
+          <p
+            css={{
+              ...flexCol,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <img src={item.snippet.thumbnails.medium.url} alt="썸네일" />
+            {item.snippet.title}
+          </p>
+          <button
+            css={{
+              marginLeft: 16,
+            }}
+            onClick={() => {
+              const clone = playQueue.concat(item);
+              setPlayQueue(clone);
+            }}>
+            추가
+          </button>
+        </div>
       );
     });
+
+  const renderedPlayQueue = playQueue.map((e, index) => {
+    return (
+      <p
+        css={{
+          ...inFlexRow,
+          alignItems: 'center',
+          fontSize: 20,
+        }}>
+        <CaretRightOutlined />
+        &nbsp;&nbsp;{e.snippet.title}&nbsp;&nbsp;00:00&nbsp;&nbsp;
+        <CloseOutlined
+          onClick={() => {
+            const clone = playQueue.concat();
+            clone.splice(index, 1);
+            setPlayQueue(clone);
+          }}
+        />
+      </p>
+    );
+  });
 
   return (
     <Layout css={{ minHeight: '100vh' }}>
       <Header
         css={{
-          display: 'flex',
-          flexDirection: 'row',
+          ...flexRow,
           justifyContent: 'space-between',
         }}>
         <div
           css={{
             fontSize: 32,
             color: 'white',
-            display: 'inline-flex',
-            flexDirection: 'row',
+            ...inFlexRow,
             whiteSpace: 'nowrap',
             overflow: 'hidden',
           }}>
@@ -72,8 +106,7 @@ function App() {
             fontSize: 32,
             fontWeight: 10,
             color: 'white',
-            display: 'inline-flex',
-            flexDirection: 'row',
+            ...inFlexRow,
             alignItems: 'center',
           }}>
           <GlobalOutlined css={{ marginRight: 16 }} />
@@ -82,8 +115,8 @@ function App() {
       </Header>
 
       <Content
-        className="flex-row"
         css={{
+          ...flexRow,
           marginTop: 32,
           marginRight: 32,
           marginLeft: 32,
@@ -93,19 +126,16 @@ function App() {
         <div
           css={{
             flex: 9,
-            display: 'flex',
-            flexDirection: 'column',
+            ...flexCol,
             justifyContent: 'space-between',
           }}>
           <div
             css={{
-              display: 'flex',
-              flexDirection: 'column',
+              ...flexCol,
             }}>
             <div
               css={{
-                display: 'inline-flex',
-                flexDirection: 'row',
+                ...inFlexRow,
                 alignItems: 'center',
               }}>
               <img
@@ -116,36 +146,7 @@ function App() {
             </div>
 
             <br />
-            <p
-              css={{
-                display: 'inline-flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                fontSize: 20,
-              }}>
-              노래 제목 1&nbsp;&nbsp;00:00&nbsp;&nbsp;
-              <CaretRightOutlined />
-            </p>
-            <p
-              css={{
-                display: 'inline-flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                fontSize: 20,
-              }}>
-              노래 제목 2&nbsp;&nbsp;00:00&nbsp;&nbsp;
-              <CaretRightOutlined />
-            </p>
-            <p
-              css={{
-                display: 'inline-flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                fontSize: 20,
-              }}>
-              노래 제목 3&nbsp;&nbsp;00:00&nbsp;&nbsp;
-              <CaretRightOutlined />
-            </p>
+            {renderedPlayQueue}
           </div>
         </div>
 
@@ -158,16 +159,15 @@ function App() {
         {/* 유튜브 검색 창 */}
         <div
           css={{
+            ...flexCol,
             flex: 9,
-            display: 'flex',
-            flexDirection: 'column',
             justifyContent: 'flex-start',
             alignItems: 'center',
           }}>
           <div
             css={{
+              ...inFlexRow,
               minWidth: '40vw',
-              display: 'inline-flex',
               justifyContent: 'center',
             }}>
             <input
@@ -185,8 +185,8 @@ function App() {
           </div>
 
           <div
-            className="in-flex-col"
             css={{
+              ...inFlexCol,
               marginTop: 32,
               alignItems: 'center',
             }}>
@@ -201,8 +201,8 @@ function App() {
       </Content>
       {/* 하단 재생 컨트롤러 */}
       <Footer
-        className="flex-row"
         css={{
+          ...flexRow,
           justifyContent: 'center',
           alignItems: 'center',
           backgroundColor: 'lightgreen',
