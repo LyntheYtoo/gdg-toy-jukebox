@@ -7,11 +7,12 @@ import {
   FastForwardOutlined,
   GlobalOutlined,
 } from '@ant-design/icons';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import './App.css';
 import { key } from './google_apikey.json';
 import { Divider } from 'antd';
 import { flexCol, flexRow, inFlexCol, inFlexRow } from 'globalStyles';
+import YouTube from 'react-youtube';
 
 const QUERY_URL = `https://www.googleapis.com/youtube/v3/search?key=${key}&part=snippet&type=video&q=`;
 
@@ -19,44 +20,49 @@ function App() {
   const [resultItems, setResultItems] = useState<YoutubeItem[]>();
   const [searchWord, setSearchWord] = useState('');
   const [playQueue, setPlayQueue] = useState<YoutubeItem[]>([]);
+  const [curMusicIdx, setCurMusicIdx] = useState<number>(0);
+  const playerRef = useRef<YouTube>(null);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
   async function reqGetSearchResult() {
     if (searchWord === '') return;
 
     const raw = await (await fetch(QUERY_URL + searchWord)).json();
     setResultItems(raw.items as YoutubeItem[]);
-    console.log(raw.items as YoutubeItem[]);
   }
 
-  const renderedYoutubeList =
+  const player = playerRef.current?.getInternalPlayer();
+
+  const renderedSearchList =
     resultItems &&
     resultItems.map((item) => {
       return (
-        <div
+        <p
           css={{
-            ...flexRow,
-            alignItems: 'center',
+            ...flexCol,
+            justifyContent: 'center',
           }}>
-          <p
+          <div
             css={{
-              ...flexCol,
+              ...flexRow,
               alignItems: 'center',
-              justifyContent: 'center',
+              alignSelf: 'center',
             }}>
             <img src={item.snippet.thumbnails.medium.url} alt="썸네일" />
-            {item.snippet.title}
-          </p>
-          <button
-            css={{
-              marginLeft: 16,
-            }}
-            onClick={() => {
-              const clone = playQueue.concat(item);
-              setPlayQueue(clone);
-            }}>
-            추가
-          </button>
-        </div>
+            <button
+              css={{
+                marginLeft: 16,
+              }}
+              onClick={() => {
+                const clone = playQueue.concat(item);
+                setPlayQueue(clone);
+              }}>
+              추가
+            </button>
+          </div>
+
+          {item.snippet.title}
+        </p>
       );
     });
 
@@ -68,7 +74,7 @@ function App() {
           alignItems: 'center',
           fontSize: 20,
         }}>
-        <CaretRightOutlined />
+        <CaretRightOutlined onClick={() => setCurMusicIdx(index)} />
         &nbsp;&nbsp;{e.snippet.title}&nbsp;&nbsp;00:00&nbsp;&nbsp;
         <CloseOutlined
           onClick={() => {
@@ -138,11 +144,44 @@ function App() {
                 ...inFlexRow,
                 alignItems: 'center',
               }}>
-              <img
+              {/* <img
                 src={'http://ipsumimage.appspot.com/240x210'}
                 alt="youtube thumbnail"
-              />
-              <h2 css={{ marginLeft: 16 }}>유튜브 제목</h2>
+              /> */}
+              {/* {curMusicIdx ? ( */}
+                <>
+                  <YouTube
+                    ref={playerRef}
+                    videoId={playQueue[curMusicIdx]?.id.videoId}
+                    opts={{
+                      height: '210',
+                      width: '240',
+                      playerVars: {
+                        autoplay: 1,
+                        controls: 0,
+                      },
+                    }}
+                    onReady={(event) => {
+                      event.target.pauseVideo();
+                    }}
+                  />
+
+                  <h2 css={{ marginLeft: 16 }}>유튜브 제목</h2>
+                </>
+              {/* ) : (
+                <>
+                  <div
+                    css={{
+                      height: 210,
+                      width: 240,
+                      ...flexCol,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: 'gray',
+                    }}></div>
+                  <h2 css={{ marginLeft: 16 }}>음악을 선택해주세요</h2>
+                </>
+              )} */}
             </div>
 
             <br />
@@ -190,12 +229,12 @@ function App() {
               marginTop: 32,
               alignItems: 'center',
             }}>
-            {renderedYoutubeList && (
+            {renderedSearchList && (
               <p>
                 <strong>검색 결과</strong>
               </p>
             )}
-            {renderedYoutubeList}
+            {renderedSearchList}
           </div>
         </div>
       </Content>
@@ -218,6 +257,11 @@ function App() {
           css={{
             marginRight: 16,
             fontSize: 32,
+          }}
+          onClick={() => {
+            if (player) {
+              isPlaying ? player.pauseVideo() : player.playVideo();
+            }
           }}
         />
         <FastForwardOutlined
