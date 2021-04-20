@@ -158,7 +158,7 @@ function App() {
         }}
         forwardMusic={() => {
           if (musicQueue.length === 0) return;
-
+ 
           if (curMusicIdx + 1 < musicQueue.length) {
             setCurMusicIdx(curMusicIdx + 1);
           }
