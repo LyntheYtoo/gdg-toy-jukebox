@@ -1,25 +1,22 @@
 /** @jsxImportSource @emotion/react */
 import Layout, { Content, Header } from 'antd/lib/layout/layout';
-import {
-  CaretRightOutlined,
-  CloseOutlined,
-  FastBackwardOutlined,
-  FastForwardOutlined,
-  GlobalOutlined,
-  PauseOutlined,
-} from '@ant-design/icons';
+import { GlobalOutlined } from '@ant-design/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
 import { key } from './google_apikey.json';
 import { Divider } from 'antd';
 import { flexCol, flexRow, inFlexCol, inFlexRow } from 'globalStyles';
 import YouTube from 'react-youtube';
+import PlayerPanel from 'components/PlayerPanel';
+import MusicSearch from 'components/MusicSearch';
+import MusicController from 'components/MusicController';
+import PlayerQueue from 'components/PlayerQueue';
 
 const QUERY_URL = `https://www.googleapis.com/youtube/v3/search?key=${key}&part=snippet&type=video&q=`;
 
 function App() {
-  const [resultItems, setResultItems] = useState<SearchItem[]>();
-  const [searchWord, setSearchWord] = useState('');
+  const [resultItems, setResultItems] = useState<SearchItem[]>([]);
+
   const [musicQueue, setMusicQueue] = useState<SearchItem[]>([]);
   const [curMusicIdx, setCurMusicIdx] = useState<number>(0);
   const playerRef = useRef<YouTube>(null);
@@ -32,72 +29,12 @@ function App() {
     }
   }, [musicQueue]);
 
-  async function reqGetSearchResult() {
-    if (searchWord === '') return;
+  async function reqGetSearchResult(word: string) {
+    if (word === '') return;
 
-    const raw = await (await fetch(QUERY_URL + searchWord)).json();
+    const raw = await (await fetch(QUERY_URL + word)).json();
     setResultItems(raw.items as SearchItem[]);
   }
-
-  const renderedSearchList =
-    resultItems &&
-    resultItems.map((item) => {
-      return (
-        <div
-          css={{
-            ...flexCol,
-            justifyContent: 'center',
-            padding: 16,
-          }}>
-          <div
-            css={{
-              ...inFlexRow,
-              alignItems: 'center',
-              alignSelf: 'center',
-            }}>
-            <img src={item.snippet.thumbnails.medium.url} alt="썸네일" />
-            <button
-              css={{
-                marginLeft: 16,
-              }}
-              onClick={() => {
-                const clone = musicQueue.concat(item);
-                setMusicQueue(clone);
-              }}>
-              추가
-            </button>
-          </div>
-
-          {item.snippet.title}
-        </div>
-      );
-    });
-
-  const renderedPlayQueue = musicQueue.map((e, index) => {
-    return (
-      <p
-        css={{
-          ...inFlexRow,
-          alignItems: 'center',
-          fontSize: 20,
-        }}>
-        <CaretRightOutlined
-          onClick={() => {
-            setCurMusicIdx(index);
-            player.playVideo();
-          }}
-        />
-        &nbsp;&nbsp;{e.snippet.title}&nbsp;&nbsp;00:00&nbsp;&nbsp;
-        <CloseOutlined
-          onClick={() => {
-            const clone = musicQueue.concat();
-            clone.splice(index, 1);
-            setMusicQueue(clone);
-          }}
-        />
-      </p>
-    );
-  });
 
   return (
     <Layout css={{ minHeight: '100vh' }}>
@@ -140,27 +77,15 @@ function App() {
           marginLeft: 32,
           justifyContent: 'space-around',
         }}>
-        {/* 플레이 큐 */}
         <div
           css={{
             flex: 9,
             ...flexCol,
-            justifyContent: 'space-between',
+            marginBottom: '7vh',
           }}>
-          <div
-            css={{
-              ...flexCol,
-              marginBottom: '7vh'
-            }}>
-            <div
-              css={{
-                ...inFlexRow,
-                alignItems: 'center',
-              }}>
-              {/* <img
-                src={'http://ipsumimage.appspot.com/240x210'}
-                alt="youtube thumbnail"
-              /> */}
+          {/* PlayingInfo */}
+          <PlayerPanel
+            youtube={
               <YouTube
                 ref={playerRef}
                 videoId={musicQueue[curMusicIdx]?.id.videoId}
@@ -180,17 +105,27 @@ function App() {
                   }
                 }}
               />
-
-              <h2 css={{ marginLeft: 16 }}>
-                {musicQueue[curMusicIdx] !== undefined
-                  ? musicQueue[curMusicIdx]?.snippet.title
-                  : '음악을 골라주세요'}
-              </h2>
-            </div>
-
-            <br />
-            {renderedPlayQueue}
-          </div>
+            }
+            title={
+              musicQueue[curMusicIdx] !== undefined
+                ? musicQueue[curMusicIdx]?.snippet.title
+                : '음악을 골라주세요'
+            }
+          />
+          <br />
+          {/* PlayingQueue */}
+          <PlayerQueue
+            musicQueue={musicQueue}
+            playMusic={(idx) => {
+              setCurMusicIdx(idx);
+              player.playVideo();
+            }}
+            removeMusic={(idx) => {
+              const clone = musicQueue.concat();
+              clone.splice(idx, 1);
+              setMusicQueue(clone);
+            }}
+          />
         </div>
 
         {/* 디바이더 */}
@@ -198,109 +133,51 @@ function App() {
           type="vertical"
           css={{ minHeight: '80vh', alignSelf: 'center' }}
         />
-
-        {/* 유튜브 검색 창 */}
-        <div
-          css={{
-            ...flexCol,
-            flex: 9,
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-          }}>
-          <div
-            css={{
-              ...inFlexRow,
-              minWidth: '40vw',
-              justifyContent: 'center',
-            }}>
-            <input
-              type="text"
-              onChange={(e) => {
-                const tmp = e.target.value.trim();
-                setSearchWord(tmp);
-              }}
-            />
-            <button
-              css={{ marginLeft: 32 }}
-              onClick={() => reqGetSearchResult()}>
-              검색
-            </button>
-          </div>
-
-          <div
-            css={{
-              ...inFlexCol,
-              marginTop: 32,
-              alignItems: 'center',
-
-              marginBottom: 80
-            }}>
-            {renderedSearchList && (
-              <p>
-                <strong>검색 결과</strong>
-              </p>
-            )}
-            {renderedSearchList}
-          </div>
+        {/* MusicSearch */}
+        <div css={{ flex: 9 }}>
+          <MusicSearch
+            addMusic={(music) => {
+              const clone = musicQueue.concat(music);
+              setMusicQueue(clone);
+            }}
+            doSearch={(word) => {
+              reqGetSearchResult(word);
+            }}
+            searchResultItems={resultItems}
+          />
         </div>
       </Content>
       {/* 하단 재생 컨트롤러 */}
-      <div
-        css={{
-          backgroundColor: 'lightgreen',
-          minHeight: 80,
-          position: 'fixed',
-          minWidth: '100%',
-          bottom: 0,
+      <MusicController
+        backwardMusic={() => {
+          if (musicQueue.length === 0) return;
 
-          ...flexRow,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <FastBackwardOutlined
-          css={{
-            marginRight: 16,
-            fontSize: 32,
-          }}
-          onClick={() => {
-            if (0 <= curMusicIdx - 1) {
-              setCurMusicIdx(curMusicIdx - 1);
-            }
-          }}
-        />
-        <CaretRightOutlined
-          css={{
-            marginRight: 16,
-            fontSize: 32,
-          }}
-          onClick={() => {
-            if (player) {
-              player.playVideo();
-            }
-          }}
-        />
-        <PauseOutlined
-          css={{
-            marginRight: 16,
-            fontSize: 32,
-          }}
-          onClick={() => {
-            if (player) {
-              player.pauseVideo();
-            }
-          }}
-        />
-        <FastForwardOutlined
-          css={{
-            fontSize: 32,
-          }}
-          onClick={() => {
-            if (curMusicIdx + 1 < musicQueue.length) {
-              setCurMusicIdx(curMusicIdx + 1);
-            }
-          }}
-        />
-      </div>
+          if (0 <= curMusicIdx - 1) {
+            setCurMusicIdx(curMusicIdx - 1);
+          }
+        }}
+        forwardMusic={() => {
+          if (musicQueue.length === 0) return;
+
+          if (curMusicIdx + 1 < musicQueue.length) {
+            setCurMusicIdx(curMusicIdx + 1);
+          }
+        }}
+        playMusic={() => {
+          if (musicQueue.length === 0) return;
+
+          if (player) {
+            player.playVideo();
+          }
+        }}
+        pauseMusic={() => {
+          if (musicQueue.length === 0) return;
+
+          if (player) {
+            player.pauseVideo();
+          }
+        }}
+      />
     </Layout>
   );
 }
