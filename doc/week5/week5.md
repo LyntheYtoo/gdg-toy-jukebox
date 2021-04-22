@@ -99,4 +99,40 @@ props에서 받아오게하여 플레이어에 대한 의존성을 분리하였�
 
 
 
-# 
+# 계정 회원가입/로그인
+우선 Auth를 활성화 하기 위해 Firebase 콘솔에서 Auth 메소드를 활성화 해주어야한다
+
+Firebase Auth 에서 제공하는 Firebase UI web을 사용하여 로그인 화면을 연결해보았다
+
+```ts
+import 'firebaseui/dist/firebaseui.css';
+import * as firebaseui from 'firebaseui';
+...
+// 이미 UI 인스턴스가 있다면 인스턴스 사용
+// 인스턴스가 없다면 새로 생성
+const ui = useMemo(
+    () =>
+      firebaseui.auth.AuthUI.getInstance() ||
+      new firebaseui.auth.AuthUI(firebase.auth()),
+    [],
+  );
+
+// 컴포넌트가 마운트 되었을때 ui 시작
+  useEffect(() => {
+    ui.start('#firebaseui-container', {
+      signInOptions: [
+        // 로그인 방법은 구글만 지원
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+      ],
+    });
+
+    // 컴포넌트가 언마운트되었을때 ui reset하여 추후 ui를 사용할 수 있게 함
+    return () => ui.reset();
+  }, []);
+```
+
+컴포넌트가 렌더링 된 후 화면 모습이다
+
+로그인 메서드가 실행된 화면이다
+
+Auth 에뮬레이터가 작동하기 때문에 실제 계정을 통해 로그인 하지 않는다

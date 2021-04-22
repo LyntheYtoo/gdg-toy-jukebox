@@ -39,7 +39,7 @@ const Login = () => {
         }}>
         로그인
       </Title>
-      <div id="firebaseui-container"></div>{' '}
+      <div id="firebaseui-container"></div>
     </div>
   );
 };
