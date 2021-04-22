@@ -1,27 +1,44 @@
 /** @jsxImportSource @emotion/react */
+import { useEffect, useMemo } from 'react';
+
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import 'firebase/firestore';
-import { useEffect, useRef } from 'react';
-import { firebaseui } from 'index';
+
 import 'firebaseui/dist/firebaseui.css';
+import * as firebaseui from 'firebaseui';
+
+import { Typography } from 'antd';
+
+const { Title } = Typography;
 
 const Login = () => {
+  const ui = useMemo(
+    () =>
+      firebaseui.auth.AuthUI.getInstance() ||
+      new firebaseui.auth.AuthUI(firebase.auth()),
+    [],
+  );
+
   useEffect(() => {
-    firebaseui.start('#firebaseui-container', {
+    ui.start('#firebaseui-container', {
       signInOptions: [
         // List of OAuth providers supported.
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        firebase.auth.EmailAuthProvider.PROVIDER_ID,
       ],
     });
+
+    return () => ui.reset();
   }, []);
 
   return (
     <div>
-      <h1 css={{
-        textAlign: 'center'
-      }}>로그인 / 회원가입</h1>
+      <Title
+        css={{
+          textAlign: 'center',
+          margin: 32,
+        }}>
+        로그인
+      </Title>
       <div id="firebaseui-container"></div>{' '}
     </div>
   );
