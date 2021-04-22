@@ -77,6 +77,7 @@ function App() {
           marginLeft: 32,
           justifyContent: 'space-around',
         }}>
+        
         <div
           css={{
             flex: 9,
@@ -158,7 +159,7 @@ function App() {
         }}
         forwardMusic={() => {
           if (musicQueue.length === 0) return;
- 
+
           if (curMusicIdx + 1 < musicQueue.length) {
             setCurMusicIdx(curMusicIdx + 1);
           }

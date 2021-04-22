@@ -10,10 +10,13 @@ import 'antd/dist/antd.css';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+import * as firebaseui from 'firebaseui';
 
-import config from './firebase_config.json'
+import config from './firebase_config.json';
+import Login from 'components/Login';
 
 firebase.initializeApp(config);
+const ui = new firebaseui.auth.AuthUI(firebase.auth());
 
 // 주소가 localhost 일 때 firestore 테스트모드
 if (window.location.hostname === 'localhost') {
@@ -23,9 +26,7 @@ if (window.location.hostname === 'localhost') {
 }
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <React.StrictMode>{true ? <Login /> : <App />}</React.StrictMode>,
   document.getElementById('root'),
 );
 
@@ -33,3 +34,5 @@ ReactDOM.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+export { ui as firebaseui };
