@@ -63,6 +63,9 @@ const MusicSearch = (props: Props) => {
         }}>
         <Search
           // placeholder="input search text"
+          css={{
+            width: 360,
+          }}
           allowClear
           enterButton="검색"
           size="large"
