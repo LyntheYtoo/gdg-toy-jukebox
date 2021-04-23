@@ -22,9 +22,12 @@ if (window.location.hostname === 'localhost') {
   firebase.auth().useEmulator('http://localhost:9099/');
   firebase.firestore().useEmulator('localhost', 8080);
 }
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
 ReactDOM.render(
-  <React.StrictMode>{true ? <Login /> : <App />}</React.StrictMode>,
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
   document.getElementById('root'),
 );
 

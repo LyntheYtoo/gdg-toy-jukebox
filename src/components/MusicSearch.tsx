@@ -1,5 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
+import { Button, Input } from 'antd';
+import Search from 'antd/lib/input/Search';
 import { SearchItem } from 'App';
 import { flexCol, inFlexCol, inFlexRow } from 'globalStyles';
 import { useState } from 'react';
@@ -10,8 +12,6 @@ interface Props {
   doSearch: (word: string) => void;
 }
 const MusicSearch = (props: Props) => {
-  const [searchWord, setSearchWord] = useState('');
-
   const renderedSearchList =
     props.searchResultItems &&
     props.searchResultItems.map((item) => {
@@ -61,16 +61,13 @@ const MusicSearch = (props: Props) => {
           minWidth: '40vw',
           justifyContent: 'center',
         }}>
-        <input
-          type="text"
-          onChange={(e) => {
-            const tmp = e.target.value.trim();
-            setSearchWord(tmp);
-          }}
+        <Search
+          // placeholder="input search text"
+          allowClear
+          enterButton="검색"
+          size="large"
+          onSearch={(value) => props.doSearch(value)}
         />
-        <button css={{ marginLeft: 32 }} onClick={() => props.doSearch(searchWord)}>
-          검색
-        </button>
       </div>
 
       <div

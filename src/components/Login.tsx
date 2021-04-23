@@ -11,7 +11,11 @@ import { Typography } from 'antd';
 
 const { Title } = Typography;
 
-const Login = () => {
+interface Props {
+  onSuccess(): void;
+  onError(): void;
+}
+const Login = (props: Props) => {
   const ui = useMemo(
     () =>
       firebaseui.auth.AuthUI.getInstance() ||
@@ -25,20 +29,34 @@ const Login = () => {
         // List of OAuth providers supported.
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
       ],
+      signInFlow: 'popup',
+      callbacks: {
+        signInSuccessWithAuthResult: (authResult) => {
+          props.onSuccess();
+          return false;
+        },
+        signInFailure: () => {
+          props.onError();
+        },
+      },
     });
 
     return () => ui.reset();
-  }, []);
+  }, [props, ui]);
 
   return (
-    <div>
-      <Title
+    <div
+      css={{
+        width: '100%',
+        height: '100%',
+      }}>
+      {/* <Title
         css={{
           textAlign: 'center',
           margin: 32,
         }}>
         로그인
-      </Title>
+      </Title> */}
       <div id="firebaseui-container"></div>
     </div>
   );
