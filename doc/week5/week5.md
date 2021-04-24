@@ -135,10 +135,10 @@ const ui = useMemo(
   }, []);
 ```
 
-![](./p4.png)
+![](./p4.png)  
 컴포넌트가 렌더링 된 후 화면 모습이다
 
-![](./p5.png)
+![](./p5.png)  
 로그인 메서드가 실행된 화면이다
 
 Auth 에뮬레이터 상에서 작동하기 때문에 실제 계정을 통해 로그인 하지 않는다
@@ -166,3 +166,7 @@ Auth 에뮬레이터 상에서 작동하기 때문에 실제 계정을 통해 �
 `firebase.auth().onAuthStateChanged` 메서드를 사용해서 Firebase UI에서 로그인 되었는지 감지 가능하다
 
 로그인 상태를 감지하여 로그인 시에는 로그아웃 버튼이 로그아웃 시에는 로그인 버튼이 표기되게 하였다
+
+또한 로그인 지속성을 위해 해당메서드를 삽입하여 로그인 상태가 로컬에서 계속 유지되게 하였다  
+`firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);`
+
