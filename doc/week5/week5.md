@@ -143,6 +143,26 @@ const ui = useMemo(
 
 Auth 에뮬레이터 상에서 작동하기 때문에 실제 계정을 통해 로그인 하지 않는다
 
+```ts
+ useEffect(() => {
+    const unsubscribe = firebase.auth().onAuthStateChanged((u) => {
+      if (u === null) {
+        setUser(undefined);
+        return;
+      }
+      setUser({
+        displayName: u.displayName || undefined,
+        email: u.email || undefined,
+        phonenumber: u.phoneNumber || undefined,
+        photoURL: u.photoURL || undefined,
+        uid: u.uid,
+      });
+    });
+
+    return unsubscribe;
+  }, []);
+```
+
 `firebase.auth().onAuthStateChanged` 메서드를 사용해서 Firebase UI에서 로그인 되었는지 감지 가능하다
 
 로그인 상태를 감지하여 로그인 시에는 로그아웃 버튼이 로그아웃 시에는 로그인 버튼이 표기되게 하였다
