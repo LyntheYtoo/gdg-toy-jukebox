@@ -160,6 +160,7 @@ function App() {
                     height: '210',
                     width: '240',
                     playerVars: {
+                      controls: 0,
                       autoplay: 1,
                     },
                   }}
