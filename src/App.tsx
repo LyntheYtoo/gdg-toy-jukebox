@@ -43,6 +43,10 @@ function App() {
   }, [musicQueue]);
 
   useEffect(() => {
+    player.stopVideo().then(() => player.playVideo());
+  }, [curMusicIdx, player]);
+
+  useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged((u) => {
       if (u === null) {
         setUser(undefined);
