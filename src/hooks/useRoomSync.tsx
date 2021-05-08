@@ -1,12 +1,10 @@
-/** @jsxImportSource @emotion/react */
-
 import { SearchItem, User } from 'App';
 import { useEffect, useMemo, useState } from 'react';
 
 import firebase from 'firebase';
 import 'firebase/firestore';
 
-interface Props {
+interface Param {
   currentUser?: User;
 
   playMusic: () => void;
@@ -17,62 +15,59 @@ interface Props {
   musicQueue: SearchItem[];
 
   roomId?: string;
-  setRoomId: (id: string) => void;
+  setRoomId: (id: string | undefined) => void;
 }
-const NetworkMusicController = (props: Props) => {
+const useRoomSync = (params: Param) => {
   const db = useMemo(() => firebase.firestore(), []);
 
   useEffect(() => {
     // 유저가 없으면 실행 안함
-    if (!props.currentUser) return;
+    if (!params.currentUser) return;
 
     // 현재 접속중인 방이 없을 때만 자기 uid의 방을 팜
-    if (props.roomId) return;
+    if (params.roomId) return;
 
     db.collection('room')
       // .where('masterUid', '==', props.currentUser.uid)
       .get()
       .then(snapshot => {
         if (snapshot.empty) {
-          createMyRoom(props.currentUser!).then(doc => {
-            props.setRoomId(doc.id);
+          createMyRoom(params.currentUser!).then(doc => {
+            params.setRoomId(doc.id);
           });
         } else {
           const roomId = snapshot.docs[0].id;
-          props.setRoomId(roomId);
+          params.setRoomId(roomId);
         }
       });
-  }, [createMyRoom, db, props]);
+  }, [createMyRoom, db, params]);
 
-  // 동기화 당하는 로직
   useEffect(() => {
-    if (!props.roomId) return;
+    if (!params.roomId) return;
 
     return db
       .collection('room')
-      .doc(props.roomId)
+      .doc(params.roomId)
       .onSnapshot(doc => {
         const roomData = doc.data() as Room | undefined;
+        console.log('ssss');
 
         if (!roomData) return;
 
         if (roomData.isPlaying) {
-          props.playMusic();
+          params.playMusic();
         }
         if (!roomData.isPlaying) {
-          props.pauseMusic();
+          params.pauseMusic();
         }
-        if (!compareSameMusicIndex(roomData.musicIndex, props.musicIndex)) {
-          props.setMusicIndex(roomData.musicIndex);
+        if (!compareSameMusicIndex(roomData.musicIndex, params.musicIndex)) {
+          params.setMusicIndex(roomData.musicIndex);
         }
-        if (!compareSameMusicQueue(roomData.musicQueue, props.musicQueue)) {
-          props.setMusicQueue(roomData.musicQueue);
+        if (!compareSameMusicQueue(roomData.musicQueue, params.musicQueue)) {
+          params.setMusicQueue(roomData.musicQueue);
         }
       });
-  }, [props.roomId, props, db]);
-
-  // 동기화 하는 로직
-  useEffect(() => {}, []);
+  }, [params.roomId, params, db]);
 
   async function createMyRoom(currentUser: User) {
     console.log('createMyRoom');
@@ -102,7 +97,7 @@ const NetworkMusicController = (props: Props) => {
 
   function updateRoomMusicIdx(idx: number) {
     db.collection('room')
-      .doc(props.roomId)
+      .doc(params.roomId)
       .update({
         musicIndex: idx,
       } as Room);
@@ -110,7 +105,7 @@ const NetworkMusicController = (props: Props) => {
 
   function updateRoomMusicQueue(queue: SearchItem[]) {
     db.collection('room')
-      .doc(props.roomId)
+      .doc(params.roomId)
       .update({
         musicQueue: queue,
       } as Room);
@@ -118,15 +113,19 @@ const NetworkMusicController = (props: Props) => {
 
   function updateIsPlaying(isPlaying: boolean) {
     db.collection('room')
-      .doc(props.roomId)
+      .doc(params.roomId)
       .update({
         isPlaying: isPlaying,
       } as Room);
   }
 
-  return <></>;
+  return {
+    updateIsPlaying,
+    updateRoomMusicIdx,
+    updateRoomMusicQueue
+  };
 };
-export default NetworkMusicController;
+export default useRoomSync;
 
 interface Room {
   masterUid: string;

@@ -12,7 +12,6 @@ import 'firebase/auth';
 import 'firebase/firestore';
 
 import config from './firebase_config.json';
-import Login from 'components/Login';
 
 firebase.initializeApp(config);
 

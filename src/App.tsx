@@ -1,14 +1,16 @@
 /** @jsxImportSource @emotion/react */
+import React, { useEffect, useRef, useState } from 'react';
+import firebase from 'firebase';
+import 'firebase/auth';
+import './App.css';
+import { key } from './google_apikey.json';
+import { Button, Divider, Modal } from 'antd';
 import Layout, { Content, Header } from 'antd/lib/layout/layout';
 import {
   GlobalOutlined,
   LoginOutlined,
   LogoutOutlined,
 } from '@ant-design/icons';
-import React, { useEffect, useRef, useState } from 'react';
-import './App.css';
-import { key } from './google_apikey.json';
-import { Button, Divider, Modal } from 'antd';
 import { flexCol, flexRow, inFlexCol, inFlexRow } from 'globalStyles';
 import YouTube from 'react-youtube';
 import PlayerPanel from 'components/PlayerPanel';
@@ -17,8 +19,9 @@ import MusicController from 'components/MusicController';
 import PlayerQueue from 'components/PlayerQueue';
 import Login from 'components/Login';
 
-import firebase from 'firebase';
-import 'firebase/auth';
+
+import NetworkMusicController from 'components/NetworkMusicController';
+import RoomSearch from 'components/RoomSearch';
 
 const QUERY_URL = `https://www.googleapis.com/youtube/v3/search?key=${key}&part=snippet&type=video&q=`;
 
@@ -30,7 +33,8 @@ function App() {
 
   const [isLoginVisible, setIsLoginVisible] = useState<boolean>(false);
 
-  const [user, setUser] = useState<User>();
+  const [currentUser, setCurrentUser] = useState<User>();
+  const [curRoomId, setCurRoomId] = useState<string>();
 
   const playerRef = useRef<YouTube>(null);
 
@@ -43,12 +47,17 @@ function App() {
   }, [musicQueue]);
 
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged((u) => {
+    player.stopVideo();
+    player.playVideo();
+  }, [curMusicIdx, player]);
+
+  useEffect(() => {
+    const unsubscribe = firebase.auth().onAuthStateChanged(u => {
       if (u === null) {
-        setUser(undefined);
+        setCurrentUser(undefined);
         return;
       }
-      setUser({
+      setCurrentUser({
         displayName: u.displayName || undefined,
         email: u.email || undefined,
         phonenumber: u.phoneNumber || undefined,
@@ -110,7 +119,7 @@ function App() {
             }}>
             <GlobalOutlined css={{ marginRight: 16 }} />
             gdgbox.today/test
-            {user ? (
+            {currentUser ? (
               <Button
                 css={{
                   marginLeft: 16,
@@ -164,7 +173,7 @@ function App() {
                       autoplay: 1,
                     },
                   }}
-                  onReady={(event) => {
+                  onReady={event => {
                     event.target.pauseVideo();
                   }}
                   onEnd={() => {
@@ -184,11 +193,11 @@ function App() {
             {/* PlayingQueue */}
             <PlayerQueue
               musicQueue={musicQueue}
-              playMusic={(idx) => {
+              playMusic={idx => {
                 setCurMusicIdx(idx);
                 player.playVideo();
               }}
-              removeMusic={(idx) => {
+              removeMusic={idx => {
                 const clone = musicQueue.concat();
                 clone.splice(idx, 1);
                 setMusicQueue(clone);
@@ -202,13 +211,16 @@ function App() {
             css={{ minHeight: '80vh', alignSelf: 'center' }}
           />
           {/* MusicSearch */}
-          <div css={{ flex: 9 }}>
+          <div css={{ flex: 9, ...flexCol, alignItems: 'center' }}>
+            방검색
+            <RoomSearch roomId={curRoomId} setRoomId={setCurRoomId} />
+            음악검색
             <MusicSearch
-              addMusic={(music) => {
+              addMusic={music => {
                 const clone = musicQueue.concat(music);
                 setMusicQueue(clone);
               }}
-              doSearch={(word) => {
+              doSearch={word => {
                 reqGetSearchResult(word);
               }}
               searchResultItems={resultItems}
@@ -259,6 +271,28 @@ function App() {
         }}>
         <Login onError={() => closeModal()} onSuccess={() => closeModal()} />
       </Modal>
+      {/* <NetworkMusicController
+        setRoomId={setCurRoomId}
+        currentUser={currentUser}
+        setMusicIndex={setCurMusicIdx}
+        setMusicQueue={setMusicQueue}
+        musicIndex={curMusicIdx}
+        musicQueue={musicQueue}
+        playMusic={() => {
+          if (musicQueue.length === 0) return;
+
+          if (player) {
+            player.playVideo();
+          }
+        }}
+        pauseMusic={() => {
+          if (musicQueue.length === 0) return;
+
+          if (player) {
+            player.pauseVideo();
+          }
+        }}
+      /> */}
     </>
   );
 }
