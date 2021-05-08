@@ -25,7 +25,7 @@ const NetworkMusicController = (props: Props) => {
   useEffect(() => {
     // 유저가 없으면 실행 안함
     if (!props.currentUser) return;
-
+    
     // 현재 접속중인 방이 없을 때만 자기 uid의 방을 팜
     if (props.roomId) return;
 

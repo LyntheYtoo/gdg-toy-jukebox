@@ -19,7 +19,6 @@ import MusicController from 'components/MusicController';
 import PlayerQueue from 'components/PlayerQueue';
 import Login from 'components/Login';
 
-
 import NetworkMusicController from 'components/NetworkMusicController';
 import RoomSearch from 'components/RoomSearch';
 
@@ -47,8 +46,7 @@ function App() {
   }, [musicQueue]);
 
   useEffect(() => {
-    player.stopVideo();
-    player.playVideo();
+    player?.stopVideo().then(() => player.playVideo());
   }, [curMusicIdx, player]);
 
   useEffect(() => {
