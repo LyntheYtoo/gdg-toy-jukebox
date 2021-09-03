@@ -50,7 +50,6 @@ const useRoomSync = (params: Param) => {
       .doc(params.roomId)
       .onSnapshot(doc => {
         const roomData = doc.data() as Room | undefined;
-        console.log('ssss');
 
         if (!roomData) return;
 
